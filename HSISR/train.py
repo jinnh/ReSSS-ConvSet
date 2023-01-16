@@ -83,7 +83,7 @@ def main():
         scheduler.step()
         train(train_loader, optimizer, model, criterion, epoch)
         if (epoch % 50 == 0):
-            val(val_loader, model, epoch)
+            val(val_loader, model)
             save_checkpoint(epoch, model, optimizer)
 
 def train(train_loader, optimizer, model, criterion, epoch):
@@ -96,10 +96,14 @@ def train(train_loader, optimizer, model, criterion, epoch):
         if opt.cuda:
             input = input.cuda()
             label = label.cuda()
-        SR, res_1r = model(input, epoch)
-        res_loss = torch.mean(res_1r ** 2)
+        if opt.model_name == 'res3conv':
+            SR = model(input)
+            svdloss = 0
+        else:
+            SR, svdloss = model(input)
+            svdloss = svdloss * opt.svdLossWeight
         l1_loss = criterion(SR, label)
-        loss = l1_loss + res_loss
+        loss = l1_loss + svdloss
         optimizer.zero_grad()
         loss.backward()
         optimizer.step()
@@ -107,17 +111,17 @@ def train(train_loader, optimizer, model, criterion, epoch):
         lossValue.append(loss.item())
 
         if iteration % 80 == 0:
-            print("===> {} Epoch[{}]({}/{}): Loss: {:.7f} L1Loss: {:.7f} ResLoss: {:.7f}".format(time.ctime(), epoch,
+            print("===> {} Epoch[{}]({}/{}): Loss: {:.7f} L1Loss: {:.7f} svdLoss: {:.7f}".format(time.ctime(), epoch,
                                                                                                  iteration,
                                                                                                  len(train_loader),
                                                                                                  loss.item(),
                                                                                                  l1_loss.item(),
-                                                                                                 res_loss.item()))
+                                                                                                 svdloss.item()))
 
     print("===> {} Epoch[{}]: AveLoss: {:.10f}".format(time.ctime(), epoch, np.mean(np.array(lossValue))))
 
 
-def val(val_loader, model, epoch):
+def val(val_loader, model):
     torch.cuda.empty_cache()
     with torch.no_grad():
         model.eval()
@@ -130,7 +134,11 @@ def val(val_loader, model, epoch):
             if opt.cuda:
                 input = input.cuda()
                 HR = HR.cuda()
-            SR, _ = model(input, epoch)
+
+            if opt.model_name == 'res3conv':
+                SR = model(input)
+            else:
+                SR, _ = model(input)
             SR = SR.cpu().data[0].numpy()
             HR = HR.cpu().data[0].numpy()
             val_psnr += compare_mpsnr(x_true=HR, x_pred=SR, data_range=1)
