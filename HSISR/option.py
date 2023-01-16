@@ -8,7 +8,7 @@ parser.add_argument("--nEpochs", type=int, default=50, help="maximum number of e
 parser.add_argument('--model_name', default='res3conv', type=str, help="model name (res3conv, res3net)")
 parser.add_argument("--dataset", default="CAVE", type=str, help="data name (CAVE, HARVARD)")
 parser.add_argument("--lr", type=int, default=5e-4, help="initial  lerning rate")
-
+parser.add_argument("--svdLossWeight", type=float, default=1e-4, help="initial svdLossWeight")
 parser.add_argument("--cuda", action="store_true", help="Use cuda")
 parser.add_argument("--gpus", default="0", type=str, help="gpu ids")
 parser.add_argument("--threads", type=int, default=8, help="number of threads for dataloader to use")
