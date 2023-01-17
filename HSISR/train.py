@@ -60,10 +60,7 @@ def main():
         model = model.cpu()
 
     print('# parameters:', sum(param.numel() for param in model.parameters()))
-    for name, p in model.named_parameters():
-        if 'downscale' in name:
-            p.requires_grad = False
-            
+
     optimizer = optim.Adam(model.parameters(), lr=opt.lr, betas=(0.9, 0.999), eps=1e-08)
 
     # resuming from a checkpoint
@@ -101,12 +98,13 @@ def train(train_loader, optimizer, model, criterion, epoch):
             label = label.cuda()
         if opt.model_name == 'res3conv':
             SR = model(input)
-            svdloss = 0
+            l1_loss = criterion(SR, label)
+            loss = l1_loss 
         else:
             SR, svdloss = model(input)
             svdloss = svdloss * opt.svdLossWeight
-        l1_loss = criterion(SR, label)
-        loss = l1_loss - svdloss
+            l1_loss = criterion(SR, label)
+            loss = l1_loss - svdloss
         optimizer.zero_grad()
         loss.backward()
         optimizer.step()
@@ -114,12 +112,19 @@ def train(train_loader, optimizer, model, criterion, epoch):
         lossValue.append(loss.item())
 
         if iteration % 80 == 0:
-            print("===> {} Epoch[{}]({}/{}): Loss: {:.7f} L1Loss: {:.7f} svdLoss: {:.7f}".format(time.ctime(), epoch,
-                                                                                                 iteration,
-                                                                                                 len(train_loader),
-                                                                                                 loss.item(),
-                                                                                                 l1_loss.item(),
-                                                                                                 svdloss.item()))
+            if opt.model_name == 'res3conv':
+                print("===> {} Epoch[{}]({}/{}): Loss: {:.7f} L1Loss: {:.7f}".format(time.ctime(), epoch,
+                                                                                                    iteration,
+                                                                                                    len(train_loader),
+                                                                                                    loss.item(),
+                                                                                                    l1_loss.item()))
+            else:
+                print("===> {} Epoch[{}]({}/{}): Loss: {:.7f} L1Loss: {:.7f} svdLoss: {:.7f}".format(time.ctime(), epoch,
+                                                                                                    iteration,
+                                                                                                    len(train_loader),
+                                                                                                    loss.item(),
+                                                                                                    l1_loss.item(),
+                                                                                                    svdloss.item()))
 
     print("===> {} Epoch[{}]: AveLoss: {:.10f}".format(time.ctime(), epoch, np.mean(np.array(lossValue))))
 
