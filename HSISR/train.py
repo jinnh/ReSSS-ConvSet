@@ -103,7 +103,7 @@ def train(train_loader, optimizer, model, criterion, epoch):
             SR, svdloss = model(input)
             svdloss = svdloss * opt.svdLossWeight
         l1_loss = criterion(SR, label)
-        loss = l1_loss + svdloss
+        loss = l1_loss - svdloss
         optimizer.zero_grad()
         loss.backward()
         optimizer.step()
