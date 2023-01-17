@@ -30,7 +30,7 @@ def main():
 
     torch.manual_seed(opt.seed)
 
-    if opt.model_name == 'warmup':
+    if opt.model_name == 'res3conv':
         sys.stdout = Logger(osp.join(save_dir, 'log_train_res3conv.txt'))
     else:
         sys.stdout = Logger(osp.join(save_dir, 'log_train_res3net.txt'))
@@ -60,7 +60,10 @@ def main():
         model = model.cpu()
 
     print('# parameters:', sum(param.numel() for param in model.parameters()))
-
+    for name, p in model.named_parameters():
+        if 'downscale' in name:
+            p.requires_grad = False
+            
     optimizer = optim.Adam(model.parameters(), lr=opt.lr, betas=(0.9, 0.999), eps=1e-08)
 
     # resuming from a checkpoint
