@@ -26,9 +26,9 @@ You can refer to the following links to download the dataset, [ICVL](http://icvl
 
 ### Testing
 
-	python test.py --cuda --gpu "0" --dataset "ICVL" --noiseType "gaussian" --model_name "res3net" --checkpoint checkpoints/CAVE_x4/res3net_gaussian_epoch_25.pth
+	python test.py --cuda --gpu "0" --dataset "ICVL" --noiseType "gaussian" --model_name "res3net" --checkpoint checkpoints/ICVL/res3net_gaussian_epoch_25.pth
 
-	python test.py --cuda --gpu "0" --dataset "ICVL" --noiseType "complex" --model_name "res3net" --checkpoint checkpoints/CAVE_x4/res3net_complex_epoch_25.pth
+	python test.py --cuda --gpu "0" --dataset "ICVL" --noiseType "complex" --model_name "res3net" --checkpoint checkpoints/ICVL/res3net_complex_epoch_25.pth
 
 HS image super-resolution
 --------
