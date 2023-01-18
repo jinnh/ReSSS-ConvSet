@@ -1,7 +1,7 @@
 ReSSS-ConvSet
 ======
 **This is an implementation of Deep Diversity-Enhanced Feature Representation of Hyperspectral Images.**
-[[arXiv]]([https://arxiv.org/abs/2301.06132 "arXiv")
+[[arXiv]](https://arxiv.org/abs/2301.06132 "arXiv")
 
 Requirement
 ---------
