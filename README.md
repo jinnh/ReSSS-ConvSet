@@ -17,10 +17,12 @@ You can refer to the following links to download the dataset, [ICVL](http://icvl
 
 
 ### Training the model for Gaussian noise
+Enter the HSID folder and run
 
 	bash train_gaussian.sh
 
 ### Training the model for Complex noise
+Enter the HSID folder and run
 
 	bash train_complex.sh
 
@@ -38,6 +40,7 @@ You can refer to the following links to download the dataset, [CAVE](https://www
 
 
 ### Training
+Enter the HSISR folder and run
 
 	bash train.sh
 
@@ -48,26 +51,33 @@ You can refer to the following links to download the dataset, [CAVE](https://www
 
 HS image classification
 --------
+This codebase borrows from [Spectralformer](https://github.com/danfenghong/IEEE_TGRS_SpectralFormer 'Spectralformer') and [3D-CNN](https://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=8344565 '3D-CNN').
+
 ### Dataset
 
-### Training
+You can refer to the following link to download the datasets, [IndianPine and Pavia](https://drive.google.com/drive/folders/1YLGWvMUdYzRoKmThpN83n0wpapAIeloV "IndianPine and Pavia").
 
-	python demo5.py --dataset="Indian" --method="RE_F1" --epoch=1000 --patches=7 --weight_decay=1e-2 --learning_rate=1e-3 --gpu_id=0 --loss_weight=1e-4
+### Training
+Enter the HSIC folder and run
+
+	python main.py --dataset="Indian" --method="res3net" --epoch=1000 --patches=7 --weight_decay=1e-2 --learning_rate=1e-3 --gpu_id=0 --loss_weight=1e-4
+
+	python main.py --dataset="Pavia" --method="res3net" --epoch=160 --patches=7 --weight_decay=1e-3 --learning_rate=1e-3 --gpu_id=0 --loss_weight=3e-4
 
 ### Testing
 
-	python test.py --flag_test="test" --dataset="Indian" --method="RE_F1" --model_name="checkpoints/RE_F1_Indian/RE_F1_best.pth" --patches=7
+	python main.py --flag_test="test" --dataset="Indian" --method="res3net" --model_name="checkpoints/res3net_Indian/res3net_best.pt" --patches=7
+
+	python main.py --flag_test="test" --dataset="Pavia" --method="res3net" --model_name="checkpoints/res3net_Pavia/res3net_best.pt" --patches=7
 
 Citation 
 --------
-**Please cite our work if you find it helpful.**
+**Please kindly cite our work if you find it helpful.**
 
-	@misc{hou23deep,
+	@article{hou23deep,
 		title={Deep Diversity-Enhanced Feature Representation of Hyperspectral Images},
 		author={Hou, Jinhui and Zhu, Zhiyu and Hou, Junhui and Liu, Hui and Zeng, Huanqiang and Meng, Deyu},
-		eprint={2301.06132},
-      	archivePrefix={arXiv},
-      	primaryClass={cs.CV},
+      	journal={arXiv preprint arXiv:2301.06132}
 		year={2023}
 	}
   
